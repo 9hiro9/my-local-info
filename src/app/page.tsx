@@ -45,7 +45,7 @@ export default function Home() {
             <span className="text-blue-600">성남시</span> 생활 정보
           </Link>
           <nav className="flex gap-6 text-sm font-medium text-slate-500">
-            <a href="#" className="hover:text-blue-600 transition-colors">전체보기</a>
+            <Link href="/blog" className="hover:text-blue-600 transition-colors">블로그</Link>
             <a href="#" className="hover:text-blue-600 transition-colors">공지사항</a>
           </nav>
         </div>
@@ -82,7 +82,7 @@ export default function Home() {
             </div>
             <div className="space-y-4">
               {data.festivals.map((item) => (
-                <Link key={item.id} href={`/info/${item.id}`} className="group flex items-start gap-6 bg-white p-6 rounded-xl border border-gray-100 hover:border-blue-300 transition-all hover:shadow-md cursor-pointer block">
+                <Link key={item.id} href="/blog" className="group flex items-start gap-6 bg-white p-6 rounded-xl border border-gray-100 hover:border-blue-300 transition-all hover:shadow-md cursor-pointer block">
                   <div className="flex-shrink-0 w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center text-2xl group-hover:bg-blue-50 transition-colors">
                     {item.title.includes('축제') ? '🌸' : '🏢'}
                   </div>
@@ -110,7 +110,7 @@ export default function Home() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {data.benefits.map((item) => (
-                <Link key={item.id} href={`/info/${item.id}`} className="bg-white p-6 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-sm transition-all group block">
+                <Link key={item.id} href="/blog" className="bg-white p-6 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-sm transition-all group block">
                   <div className="mb-4 text-2xl group-hover:scale-110 transition-transform w-fit">🎁</div>
                   <h4 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{item.title}</h4>
                   <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed mb-4">
