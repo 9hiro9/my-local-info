@@ -17,7 +17,11 @@ export default function Home() {
               성남시 생활 정보
             </h1>
           </div>
-          <p className="text-sm text-gray-500 font-medium hidden sm:block">
+          <nav className="flex items-center gap-6">
+            <a href="/" className="text-sm font-bold text-orange-600 transition-colors">홈</a>
+            <a href="/blog" className="text-sm font-medium text-gray-500 hover:text-orange-600 transition-colors">블로그</a>
+          </nav>
+          <p className="text-sm text-gray-500 font-medium hidden md:block">
             우리 동네 소식을 한눈에!
           </p>
         </div>
@@ -35,7 +39,7 @@ export default function Home() {
             {events.map((item) => (
               <a
                 key={item.id}
-                href={`/details/${item.id}`}
+                href="/blog"
                 className="group bg-white rounded-2xl p-5 shadow-sm border border-green-100 hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col h-full"
               >
                 <div className="mb-3">
@@ -75,7 +79,7 @@ export default function Home() {
             {benefits.map((item) => (
               <a
                 key={item.id}
-                href={`/details/${item.id}`}
+                href="/blog"
                 className="group bg-white rounded-2xl p-6 shadow-sm border border-blue-100 hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col h-full relative overflow-hidden"
               >
                 {/* 카드 상단 장식 바 */}
