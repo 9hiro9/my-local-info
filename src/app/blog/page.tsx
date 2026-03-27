@@ -9,6 +9,13 @@ export default function BlogPage() {
       {/* 상단 바 */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50 py-4 shadow-sm">
         <div className="mx-auto max-w-4xl px-6 relative flex flex-col items-center justify-center">
+          {/* 상단 네비게이션 (좌측 소개, 우측 홈) */}
+          <div className="sm:absolute sm:left-6 sm:top-1/2 sm:-translate-y-1/2 mb-4 sm:mb-0">
+            <Link href="/about" className="text-sm font-bold text-slate-500 hover:text-orange-600 transition-colors">
+              ℹ️ 소개
+            </Link>
+          </div>
+
           {/* 우측 상단 홈 버튼 (블로그 페이지이므로 홈으로 유도) */}
           <div className="sm:absolute sm:right-6 sm:top-1/2 sm:-translate-y-1/2 mb-4 sm:mb-0">
             <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 text-slate-600 font-bold shadow-sm border border-slate-100 hover:bg-slate-100 transition-all text-sm">
