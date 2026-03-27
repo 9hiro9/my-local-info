@@ -58,6 +58,65 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="min-h-screen bg-[#f0f2f5] font-sans text-slate-800 antialiased">
+      {/* 구조화 데이터 주입 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": postData.title,
+            "description": postData.summary,
+            "image": "https://my-local-info-de1.pages.dev/logo.png",
+            "datePublished": postData.date,
+            "author": {
+              "@type": "Organization",
+              "name": "성남시 생활 정보"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "성남시 생활 정보",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://my-local-info-de1.pages.dev/logo.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://my-local-info-de1.pages.dev/blog/${slug}`
+            }
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "홈",
+                "item": "https://my-local-info-de1.pages.dev"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "블로그",
+                "item": "https://my-local-info-de1.pages.dev/blog"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": postData.title,
+                "item": `https://my-local-info-de1.pages.dev/blog/${slug}`
+              }
+            ]
+          })
+        }}
+      />
       {/* 상단 바 */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50 py-4 shadow-sm">
         <div className="mx-auto max-w-4xl px-6 relative flex flex-col items-center justify-center">

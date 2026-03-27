@@ -39,6 +39,45 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f0f2f5] font-sans text-slate-800 antialiased">
+      {/* 구조화 데이터 주입 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            data.festivals.map((f) => ({
+              "@context": "https://schema.org",
+              "@type": "Event",
+              "name": f.title,
+              "startDate": f.startDate,
+              "endDate": f.endDate,
+              "location": {
+                "@type": "Place",
+                "name": f.location,
+                "address": "성남시"
+              },
+              "description": f.summary
+            }))
+          )
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            data.benefits.map((b) => ({
+              "@context": "https://schema.org",
+              "@type": "GovernmentService",
+              "serviceType": "Benefit",
+              "name": b.title,
+              "description": b.summary,
+              "provider": {
+                "@type": "GovernmentOrganization",
+                "name": "성남시"
+              }
+            }))
+          )
+        }}
+      />
       {/* 깔끔한 상단 바 */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50 py-4 shadow-sm">
         <div className="mx-auto max-w-4xl px-6 relative flex flex-col items-center justify-center">
