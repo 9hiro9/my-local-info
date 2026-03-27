@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   title: "성남시 생활 정보 | 행사·혜택·지원금 안내",
@@ -39,6 +40,21 @@ export default function RootLayout({
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${adsenseId}`}
             crossOrigin="anonymous"
           />
+        )}
+        {gaId && gaId !== "나중에_입력" && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${gaId}');
+                `,
+              }}
+            />
+          </>
         )}
       </head>
       <body
