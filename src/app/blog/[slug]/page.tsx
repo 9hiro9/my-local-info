@@ -6,6 +6,8 @@ import remarkGfm from 'remark-gfm';
 import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
+import AdBanner from '@/components/AdBanner';
+import CoupangBanner from '@/components/CoupangBanner';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -179,6 +181,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 {postData.content}
               </ReactMarkdown>
             </div>
+
+            {/* 광고 영역 */}
+            <AdBanner />
+            <CoupangBanner />
 
             {/* E-E-A-T 영역: 출처 및 AI 안내 */}
             <div className="mt-12 pt-8 border-t border-gray-100">

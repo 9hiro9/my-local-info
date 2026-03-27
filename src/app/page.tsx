@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import AdBanner from '@/components/AdBanner';
 
 interface InfoItem {
   id: string;
@@ -160,6 +161,9 @@ export default function Home() {
               ))}
             </div>
           </section>
+
+          {/* 광고 영역 */}
+          <AdBanner />
 
           {/* 지원금 및 혜택 섹션 */}
           <section>
