@@ -92,7 +92,18 @@
       "description": "새로운 생명의 탄생을 경기도가 함께 축하합니다! 첫째 아이 100만원, 둘째 아이 이상 150만원의 축하금을 지급합니다.",
       "link": "#",
       "blogSlug": "2026-03-24-gyeonggi-birth-support"
+    },
+    {
+      "id": 465790,
+      "title": "유아학비 (누리과정) 지원",
+      "category": "혜택",
+      "startDate": "2020-12-17",
+      "endDate": "상시",
+      "location": "온라인 및 읍면동 주민센터",
+      "target": "국공립 및 사립유치원에 다니는 3~5세 유아 (법정저소득층 유아 추가지원)",
+      "summary": "유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790"
     }
   ],
-  "lastUpdated": "2026-03-24"
+  "lastUpdated": "2026-03-27"
 }
