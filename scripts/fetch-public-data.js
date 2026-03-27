@@ -104,6 +104,13 @@ startDate가 없으면 오늘 날짜, endDate가 없으면 '상시'로 넣어.
     }
 
     // [4단계] 기존 데이터에 추가 (schema에 맞춰 name -> title 변환)
+    let finalLink = processedItem.link || targetItem.상세URL || '#';
+    
+    // 정부24 링크 안정화 (불안정한 dtlEx 경로를 serviceInfo 경로로 변환)
+    if (finalLink.includes('gov.kr/portal/rcvfvrSvc/dtlEx/')) {
+      finalLink = finalLink.replace('rcvfvrSvc/dtlEx/', 'service/serviceInfo/');
+    }
+
     const newItem = {
       id: processedItem.id || `auto-${Date.now()}`,
       title: processedItem.name || processedItem.title,
@@ -113,7 +120,7 @@ startDate가 없으면 오늘 날짜, endDate가 없으면 '상시'로 넣어.
       location: processedItem.location,
       target: processedItem.target,
       summary: processedItem.summary,
-      link: processedItem.link || targetItem.상세URL || '#'
+      link: finalLink
     };
 
     if (newItem.category === '행사') {
