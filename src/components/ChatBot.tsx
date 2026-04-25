@@ -33,7 +33,7 @@ export default function ChatBot() {
 
   // 실시간 상담 폴링 (2초마다)
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: any;
     if (isOpen && isHumanMode) {
       interval = setInterval(async () => {
         try {
@@ -46,11 +46,11 @@ export default function ChatBot() {
                 setMessages(prev => {
                   const existingIds = new Set(prev.map(p => p.id));
                   const newMsgs = adminMsgs
-                    .filter((m: any) => !existingIds.has(m.id))
+                    .filter((m: any) => !existingIds.has(Number(m.id)))
                     .map((m: any) => ({
-                      id: m.id || Date.now() + Math.random(),
-                      sender: 'admin',
-                      text: m.text || m.message
+                      id: Number(m.id) || Date.now() + Math.random(),
+                      sender: 'admin' as const,
+                      text: m.text || m.message || ""
                     }));
                   if (newMsgs.length === 0) return prev;
                   return [...prev, ...newMsgs];

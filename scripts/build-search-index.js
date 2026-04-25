@@ -2,9 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const localInfoPath = path.join(process.cwd(), 'public/data/local-info.json');
-const postsDirPath = path.join(process.cwd(), 'src/content/posts');
-const outputPath = path.join(process.cwd(), 'public/data/search-index.json');
+// 경로를 __dirname 기준으로 계산하여 실행 환경에 영향을 받지 않도록 합니다.
+const rootDir = path.resolve(__dirname, '..');
+const localInfoPath = path.join(rootDir, 'public/data/local-info.json');
+const postsDirPath = path.join(rootDir, 'src/content/posts');
+const outputPath = path.join(rootDir, 'public/data/search-index.json');
 
 function stripMarkdown(md) {
   if (!md) return '';
@@ -27,7 +29,8 @@ function buildIndex() {
   // 1. Process local-info.json
   if (fs.existsSync(localInfoPath)) {
     try {
-      const localInfo = JSON.parse(fs.readFileSync(localInfoPath, 'utf-8'));
+      const content = fs.readFileSync(localInfoPath, 'utf-8');
+      const localInfo = JSON.parse(content);
       
       const items = [
         ...(localInfo.festivals || []),
@@ -35,44 +38,52 @@ function buildIndex() {
       ];
 
       items.forEach(item => {
-        index.push({
-          id: item.id.toString(),
-          type: item.category === '행사' ? 'festival' : 'benefit',
-          title: item.title,
-          summary: item.summary,
-          content: stripMarkdown(item.description).substring(0, 500),
-          url: item.category === '행사' ? `/festivals/${item.id}` : `/benefits/${item.id}`
-        });
+        if (item.title) {
+          index.push({
+            id: (item.id || Math.random()).toString(),
+            type: item.category === '행사' ? 'festival' : 'benefit',
+            title: item.title,
+            summary: item.summary || '',
+            content: stripMarkdown(item.description || '').substring(0, 500),
+            url: item.category === '행사' ? `/festivals/${item.id}` : `/benefits/${item.id}`
+          });
+        }
       });
     } catch (e) {
       console.error('Error parsing local-info.json:', e);
     }
+  } else {
+    console.warn('local-info.json not found at:', localInfoPath);
   }
 
   // 2. Process markdown posts
   if (fs.existsSync(postsDirPath)) {
-    const files = fs.readdirSync(postsDirPath).filter(f => f.endsWith('.md'));
-    files.forEach(file => {
-      try {
-        const fullPath = path.join(postsDirPath, file);
-        const fileContents = fs.readFileSync(fullPath, 'utf-8');
-        const { data, content } = matter(fileContents);
-        
-        const plainText = stripMarkdown(content).substring(0, 500);
-        const slug = file.replace('.md', '');
+    try {
+      const files = fs.readdirSync(postsDirPath).filter(f => f.endsWith('.md'));
+      files.forEach(file => {
+        try {
+          const fullPath = path.join(postsDirPath, file);
+          const fileContents = fs.readFileSync(fullPath, 'utf-8');
+          const { data, content } = matter(fileContents);
+          
+          const plainText = stripMarkdown(content).substring(0, 500);
+          const slug = file.replace('.md', '');
 
-        index.push({
-          id: slug,
-          type: 'post',
-          title: data.title || slug,
-          summary: data.summary || '',
-          content: plainText,
-          url: `/blog/${slug}`
-        });
-      } catch (e) {
-        console.error(`Error processing ${file}:`, e);
-      }
-    });
+          index.push({
+            id: slug,
+            type: 'post',
+            title: data.title || slug,
+            summary: data.summary || '',
+            content: plainText,
+            url: `/blog/${slug}`
+          });
+        } catch (e) {
+          console.error(`Error processing ${file}:`, e);
+        }
+      });
+    } catch (e) {
+      console.error('Error reading posts directory:', e);
+    }
   }
 
   // Save index
