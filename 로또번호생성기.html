@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로또 번호 생성기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #0f172a;
+      color: white;
+      padding-top: 100px;
+    }
+    h1 { margin-bottom: 20px; }
+    .numbers {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .ball {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background: #2563eb;
+    }
+    .bonus {
+      background: #ef4444;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #22c55e;
+      color: white;
+    }
+    button:hover { background: #16a34a; }
+  </style>
+</head>
+<body>
+  <h1>🎰 로또 번호 생성기</h1>
+  <button onclick="generate()">번호 생성</button>
+
+  <div class="numbers" id="main"></div>
+  <h3>보너스 번호</h3>
+  <div class="numbers" id="bonus"></div>
+
+  <script>
+    function generate() {
+      const nums = [];
+
+      while (nums.length < 6) {
+        const n = Math.floor(Math.random() * 45) + 1;
+        if (!nums.includes(n)) nums.push(n);
+      }
+
+      nums.sort((a, b) => a - b);
+
+      let bonus;
+      do {
+        bonus = Math.floor(Math.random() * 45) + 1;
+      } while (nums.includes(bonus));
+
+      const mainDiv = document.getElementById('main');
+      const bonusDiv = document.getElementById('bonus');
+
+      mainDiv.innerHTML = '';
+      bonusDiv.innerHTML = '';
+
+      nums.forEach(n => {
+        const el = document.createElement('div');
+        el.className = 'ball';
+        el.innerText = n;
+        mainDiv.appendChild(el);
+      });
+
+      const bEl = document.createElement('div');
+      bEl.className = 'ball bonus';
+      bEl.innerText = bonus;
+      bonusDiv.appendChild(bEl);
+    }
+  </script>
+</body>
+</html>

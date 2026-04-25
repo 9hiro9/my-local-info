@@ -191,9 +191,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               <div className="bg-slate-50 rounded-lg p-6 border border-slate-100 text-sm text-slate-600">
                 <p className="mb-4">
                   <span className="font-bold">📍 원문 출처:</span>{' '}
-                  <a href={sourceLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
-                    {sourceLink !== '#' ? sourceLink : '공공데이터포털'}
-                  </a>
+                  {sourceLink !== '#' ? (
+                    <a href={sourceLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                      {sourceLink}
+                    </a>
+                  ) : (
+                    <span className="text-slate-500 italic">상세 공고 요강 참조 (공공데이터포털)</span>
+                  )}
                 </p>
                 <p className="leading-relaxed text-slate-500">
                   ⚠️ 이 글은 공공데이터포털(<a href="http://data.go.kr" target="_blank" rel="noopener noreferrer" className="hover:underline">data.go.kr</a>)의 정보를 바탕으로 AI가 작성하였습니다. 공공기관의 정책 변경 등에 따라 실제 내용과 차이가 있을 수 있으므로, 정확한 내용은 반드시 위 원문 링크를 통해 확인해 주시기 바랍니다.
