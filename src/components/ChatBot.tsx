@@ -18,6 +18,8 @@ export default function ChatBot() {
       text: '안녕하세요! 성남시 생활 정보 AI 상담원입니다. 무엇을 도와드릴까요?',
     },
   ]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -29,15 +31,61 @@ export default function ChatBot() {
   }, [messages, isOpen]);
 
   const handleQuestionClick = (question: string, answer: string) => {
-    // 유저 질문 추가
     const userMsg: Message = { id: Date.now(), sender: 'user', text: question };
     setMessages((prev) => [...prev, userMsg]);
 
-    // 약간의 딜레이 후 AI 답변 추가
     setTimeout(() => {
       const botMsg: Message = { id: Date.now() + 1, sender: 'bot', text: answer };
       setMessages((prev) => [...prev, botMsg]);
     }, 500);
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading) return;
+
+    const userText = inputValue.trim();
+    setInputValue('');
+    
+    // 유저 메시지 추가
+    const userMsg: Message = { id: Date.now(), sender: 'user', text: userText };
+    setMessages((prev) => [...prev, userMsg]);
+    
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      
+      // Workers AI 응답 구조에 맞춰 처리 (보통 response 필드에 담김)
+      const botText = data.response || data.result?.response || "죄송합니다. 답변을 가져오지 못했습니다.";
+      
+      const botMsg: Message = { 
+        id: Date.now() + 1, 
+        sender: 'bot', 
+        text: botText
+      };
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (error) {
+      console.error('AI 호출 오류:', error);
+      const errorMsg: Message = { 
+        id: Date.now() + 1, 
+        sender: 'bot', 
+        text: "연락 중 에러가 발생했습니다. 잠시 후 다시 시도해 주세요." 
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -61,7 +109,7 @@ export default function ChatBot() {
 
       {/* 채팅창 */}
       <div
-        className={`fixed bottom-24 right-6 w-[360px] max-w-[calc(100vw-48px)] h-[500px] max-h-[calc(100vh-120px)] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ease-in-out sm:w-[360px] sm:h-[500px] ${
+        className={`fixed bottom-24 right-6 w-[360px] max-w-[calc(100vw-48px)] h-[600px] max-h-[calc(100vh-120px)] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ease-in-out sm:w-[360px] sm:h-[600px] ${
           isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-95 pointer-events-none'
         }
         max-sm:bottom-0 max-sm:right-0 max-sm:w-full max-sm:h-full max-sm:max-w-none max-sm:max-h-none max-sm:rounded-none`}
@@ -102,23 +150,57 @@ export default function ChatBot() {
               </div>
             </div>
           ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100">
+                <div className="flex gap-1">
+                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div>
+                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                </div>
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* 질문 버튼 영역 */}
-        <div className="p-4 bg-white border-t border-gray-100">
-          <p className="text-[10px] uppercase font-bold text-gray-400 mb-3 ml-1 tracking-wider">자주 묻는 질문</p>
-          <div className="flex flex-col gap-2">
-            {chatData.map((item, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleQuestionClick(item.question, item.answer)}
-                className="text-left text-xs bg-gray-50 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all py-2.5 px-4 rounded-xl border border-gray-200 text-gray-700 font-medium"
-              >
-                {item.question}
-              </button>
-            ))}
+        {/* 질문 입력 및 버튼 영역 */}
+        <div className="bg-white border-t border-gray-100 overflow-hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          {/* 추천 질문 */}
+          <div className="p-4 pb-2">
+            <p className="text-[10px] uppercase font-bold text-gray-400 mb-2 ml-1 tracking-wider">자주 묻는 질문</p>
+            <div className="flex flex-wrap gap-2">
+              {chatData.slice(0, 3).map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleQuestionClick(item.question, item.answer)}
+                  className="text-left text-[11px] bg-gray-50 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all py-1.5 px-3 rounded-lg border border-gray-200 text-gray-600 font-medium"
+                >
+                  {item.question}
+                </button>
+              ))}
+            </div>
           </div>
+          
+          {/* 텍스트 입력창 */}
+          <form onSubmit={handleSendMessage} className="p-4 pt-1 flex gap-2">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="궁금한 내용을 입력하세요..."
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-all"
+            />
+            <button
+              type="submit"
+              disabled={!inputValue.trim() || isLoading}
+              className="bg-blue-600 text-white p-2.5 rounded-xl disabled:opacity-50 disabled:bg-gray-400 hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            </button>
+          </form>
         </div>
       </div>
     </div>
