@@ -3,3 +3,7 @@ pages_build_output_dir = "out"
 
 [ai]
 binding = "AI"
+
+[[kv_namespaces]]
+binding = "CHAT_KV"
+id = "74c3f06fd8794f09a29e4437c82b76bd"
